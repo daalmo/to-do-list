@@ -35,50 +35,65 @@ import React, {useState} from 'react';
 
 export default function App() {
   //Need state for list of tasks 
-  const [ list, setList ] = useState([
-    {
-      title: "go on a run",
-      description: "",
-      dueDate: "",
-      isCompleted: false
-    }
-  ]);
-
+  const [ list, setList ] = useState([]);
   //Need state for the current value of each text input
   const [ title, setTitle ] = useState('');
-
+  const [ description, setDescription] = useState('');
+  const [ dueDate, setDueDate] = useState('');
   //Need a function to add a task to the task list- task is an object
-  const handleAdd = obj => taskList.push( obj ) ;
+  const handleAdd = () => {
+    if ( title === '') alert( 'Please add title');
+    else if ( description === '') alert( 'Please add description');
+    else if ( dueDate === '') alert( 'Please add due date');
+    else {
+      setList([ ...list , { 
+        title: title, 
+        description: description, 
+        dueDate: dueDate 
+      }, 
+    ]);  
+    setTitle('');
+    setDescription('');
+    setDueDate('');
+    }
+  };
 
   //This is a component that will be reused to represent each individual task.
   //What props does each task need?
-  const TodoItem = ({ title, description, dueDate, isCompleted }) => {
+
+  const TodoItem = ({ task }) => {
     //Need state to represent whether the task is checked off or not
-    const [isCompleted, setIsCompleted ] = useState(false);
-    // setCheck = false;
+    const [ checkedOff, setCheckedOff ] = useState(false);
 
     //Need a function to toggle whether the task is checked off or not
     const handleCheckOff = () => {
-      isCompleted === true ? setIsCompleted(true) : setIsCompleted(false);
+      setCheckedOff(!checkedOff);
     };
 
     //Need a function to delete the task from the todo list
     //Note that because we've placed this component inside of our main app,
     //it has direct access to the state of our main app
-    const handleDelete = () => {
-      taskList.remove( inputs );
-    };
+    const deleteTask = () => {
+      setList( list.filter( item => item !== task));
+    }
 
     return (
       <div>
         {/* The title, description, and due date should appear here. 
         Remember that what you want to display changes based on whether 
         the task is checked off or not */}
-        <h1>{list.title}</h1>
-        <h3>{description}</h3>
-        <p>{dueDate}</p>
+        {checkedOff ?
+        <h1>
+          <strike>{task.title}</strike>
+        </h1> :
+        <>
+          <h1>{task.title}</h1>
+          <h3>{task.description}</h3>
+          <p>Due: {task.dueDate}</p>
+        </>
+         }
         <button onClick={handleCheckOff}>Check off</button>
-        <button onClick={handleDelete}>Delete</button>
+        <button onClick={deleteTask}>Delete</button>
       </div>
     );
   };
@@ -91,14 +106,28 @@ export default function App() {
       <input
         type="text"
         placeholder="Type to do item here..."
-        value={inputs.title}
-        onChange={(e) => setInputs(inputs.title)}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
       />
-      <button onClick={handleAdd}>Add Todo Item</button>
+      <input
+        type="text"
+        placeholder="Type description here..."
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Type due date here..."
+        value={dueDate}
+        onChange={(e) => setDueDate(e.target.value)}
+      />
+      <button onClick={handleAdd}>Add To-do Item</button>
 
       {/* All of the tasks should render here. How can we transform the 
       list of tasks into a list of components? */}
-      
+      {list.map( (task) => (
+        <TodoItem task={task} />
+      ))}
     </div>
   );
 }
