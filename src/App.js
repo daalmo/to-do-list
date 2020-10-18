@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import Button from '@material-ui/core/Button';
 
 // function App() {
 
@@ -121,7 +122,7 @@ export default function App() {
         value={dueDate}
         onChange={(e) => setDueDate(e.target.value)}
       />
-      <button onClick={handleAdd}>Add To-do Item</button>
+      <Button type="primary" onClick={handleAdd}>Add To-do Item</Button>
 
       {/* All of the tasks should render here. How can we transform the 
       list of tasks into a list of components? */}
